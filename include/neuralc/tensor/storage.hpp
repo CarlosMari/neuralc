@@ -14,6 +14,8 @@ namespace neuralc{
             [[nodiscard]] float* data();
             [[nodiscard]] const float* data() const;
 
+            [[nodiscard]] Storage clone() const;
+
         private:
             std::unique_ptr<float[]> data_;
             std::size_t size_;

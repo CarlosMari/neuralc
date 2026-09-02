@@ -25,6 +25,7 @@ option(
 
 add_library(neuralc
     src/tensor/storage.cpp
+    src/tensor/tensor.cpp
 )
 
 target_include_directories(neuralc
@@ -73,6 +74,7 @@ FetchContent_MakeAvailable(googletest)
 add_executable(neuralc_tests
     tests/test_main.cpp
     tests/tensor/test_storage.cpp
+    tests/tensor/test_tensor.cpp
 )
 
 target_link_libraries(neuralc_tests
