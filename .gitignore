@@ -67,3 +67,24 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# C/C++ compiler output
+*.o
+*.obj
+*.so
+*.dylib
+*.dll
+
+# Coverage
+*.gcda
+*.gcno
+*.gcov
+coverage/
