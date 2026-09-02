@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    strategy:
+      matrix:
+        compiler:
+          - gcc
+          - clang
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build
+
+      - name: Configure
+        run: |
+          if [ "${{ matrix.compiler }}" = "gcc" ]; then
+            export CXX=g++
+          else
+            export CXX=clang++
+          fi
+
+          cmake \
+            -B build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
