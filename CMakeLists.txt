@@ -5,15 +5,32 @@ project(neuralc
     LANGUAGES CXX
 )
 
+# ─────────────────────────────────────────────
+# Project configuration
+# ─────────────────────────────────────────────
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-option(ENABLE_SANITIZERS "Enable sanitizers" OFF)
+option(
+    ENABLE_SANITIZERS
+    "Enable AddressSanitizer and UndefinedBehaviorSanitizer"
+    OFF
+)
 
-# Main Executable
-add_executable(neuralc
-    src/main.cpp
+# ─────────────────────────────────────────────
+# Library
+# ─────────────────────────────────────────────
+
+add_library(neuralc
+    src/tensor/storage.cpp
+    src/tensor/tensor.cpp
+)
+
+target_include_directories(neuralc
+    PUBLIC
+        ${PROJECT_SOURCE_DIR}/include
 )
 
 target_compile_options(neuralc PRIVATE
@@ -22,7 +39,23 @@ target_compile_options(neuralc PRIVATE
     -Wpedantic
 )
 
+# ─────────────────────────────────────────────
+# Development executable
+# ─────────────────────────────────────────────
+
+add_executable(neuralc_demo
+    src/main.cpp
+)
+
+target_link_libraries(neuralc_demo
+    PRIVATE
+        neuralc
+)
+
+# ─────────────────────────────────────────────
 # Testing
+# ─────────────────────────────────────────────
+
 include(CTest)
 enable_testing()
 
@@ -40,15 +73,15 @@ FetchContent_MakeAvailable(googletest)
 
 add_executable(neuralc_tests
     tests/test_main.cpp
+    tests/tensor/test_storage.cpp
+    tests/tensor/test_tensor.cpp
 )
 
 target_link_libraries(neuralc_tests
     PRIVATE
-    GTest::gtest_main
+        neuralc
+        GTest::gtest_main
 )
-
-include(GoogleTest)
-gtest_discover_tests(neuralc_tests)
 
 target_compile_options(neuralc_tests PRIVATE
     -Wall
@@ -56,17 +89,30 @@ target_compile_options(neuralc_tests PRIVATE
     -Wpedantic
 )
 
-# Sanitizers
+include(GoogleTest)
+gtest_discover_tests(neuralc_tests)
 
-option(ENABLE_SANITIZERS "Enable sanitizers" OFF)
+# ─────────────────────────────────────────────
+# Sanitizers
+# ─────────────────────────────────────────────
 
 if(ENABLE_SANITIZERS)
+
     target_compile_options(neuralc PRIVATE
         -fsanitize=address,undefined
         -fno-omit-frame-pointer
     )
 
     target_link_options(neuralc PRIVATE
+        -fsanitize=address,undefined
+    )
+
+    target_compile_options(neuralc_demo PRIVATE
+        -fsanitize=address,undefined
+        -fno-omit-frame-pointer
+    )
+
+    target_link_options(neuralc_demo PRIVATE
         -fsanitize=address,undefined
     )
 
@@ -78,4 +124,47 @@ if(ENABLE_SANITIZERS)
     target_link_options(neuralc_tests PRIVATE
         -fsanitize=address,undefined
     )
+
+endif()
+
+# ─────────────────────────────────────────────
+# Linting
+# ─────────────────────────────────────────────
+
+find_program(CLANG_FORMAT clang-format)
+find_program(CLANG_TIDY clang-tidy)
+
+if(CLANG_FORMAT AND CLANG_TIDY)
+
+    set(NEURALC_SOURCE_FILES
+        ${PROJECT_SOURCE_DIR}/src/tensor/storage.cpp
+        ${PROJECT_SOURCE_DIR}/src/main.cpp
+        ${PROJECT_SOURCE_DIR}/tests/test_main.cpp
+        ${PROJECT_SOURCE_DIR}/tests/tensor/test_storage.cpp
+    )
+
+    add_custom_target(lint
+        COMMAND ${CLANG_FORMAT}
+            --dry-run
+            --Werror
+            ${NEURALC_SOURCE_FILES}
+
+        COMMAND ${CLANG_TIDY}
+            ${PROJECT_SOURCE_DIR}/src/tensor/storage.cpp
+            --
+            -I${PROJECT_SOURCE_DIR}/include
+            -std=c++20
+
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+
+        COMMENT "Running clang-format and clang-tidy"
+    )
+
+else()
+
+    message(WARNING
+        "clang-format or clang-tidy not found. "
+        "The lint target will not be available."
+    )
+
 endif()
