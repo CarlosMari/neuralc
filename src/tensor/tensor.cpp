@@ -62,4 +62,30 @@ Tensor::Tensor(const std::vector<std::size_t>& shape) : shape_(shape), strides_(
     return data() + flat_index(index);
 }
 
+void Tensor::fill(float value){
+    for(std::size_t i = 0; i < size(); ++i){
+        data()[i] = value;
+    }
+}
+
+void Tensor::ones(){
+    fill(1.0f);
+}
+
+void Tensor::zeros(){
+    fill(0.0f);
+}
+
+[[nodiscard]] Tensor Tensor::ones(const std::vector<std::size_t>& shape){
+       Tensor newTensor(shape);
+       newTensor.fill(1.0f);
+       return newTensor;
+}
+
+[[nodiscard]] Tensor Tensor::zeros(const std::vector<std::size_t>& shape){
+        Tensor newTensor(shape);
+        newTensor.fill(0.0f);
+        return newTensor;
+}
+
 } // namespace neuralc

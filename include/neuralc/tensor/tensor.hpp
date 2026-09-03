@@ -11,6 +11,9 @@ class Tensor {
   public:
     explicit Tensor(const std::vector<std::size_t>& shape);
 
+    [[nodiscard]] static Tensor ones(const std::vector<std::size_t>& shape);
+    [[nodiscard]] static Tensor zeros(const std::vector<std::size_t>& shape);
+
     [[nodiscard]] const std::vector<std::size_t>& shape() const;
     [[nodiscard]] std::size_t size() const;
 
@@ -21,6 +24,10 @@ class Tensor {
 
     [[nodiscard]] float* at(const std::vector<std::size_t>& index);
     [[nodiscard]] const float* at(const std::vector<std::size_t>& index) const;
+
+    void fill(float value);
+    void ones();
+    void zeros();
 
   private:
     std::shared_ptr<Storage> storage_;

@@ -51,4 +51,46 @@ TEST(TensorTest, ConstIndexAccess) {
     EXPECT_FLOAT_EQ(*const_tensor.at({1, 2}), 42.0f);
 }
 
+TEST(TensorTest, Fill) {
+    Tensor tensor({2, 3});
+
+    tensor.fill(5.0f);
+
+    for (std::size_t i = 0; i < tensor.size(); ++i) {
+        EXPECT_FLOAT_EQ(tensor.data()[i], 5.0f);
+    }
+}
+
+TEST(TensorTest, Ones) {
+    Tensor tensor({2, 3});
+
+    tensor.ones();
+
+    for (std::size_t i = 0; i < tensor.size(); ++i) {
+        EXPECT_FLOAT_EQ(tensor.data()[i], 1.0f);
+    }
+}
+
+TEST(TensorTest, OnesFactory) {
+    Tensor tensor = Tensor::ones({2, 3});
+
+    EXPECT_EQ(tensor.size(), 6);
+    EXPECT_EQ(tensor.shape(), std::vector<std::size_t>({2, 3}));
+
+    for (std::size_t i = 0; i < tensor.size(); ++i) {
+        EXPECT_FLOAT_EQ(tensor.data()[i], 1.0f);
+    }
+}
+
+TEST(TensorTest, ZerosFactory) {
+    Tensor tensor = Tensor::zeros({2, 3});
+
+    EXPECT_EQ(tensor.size(), 6);
+    EXPECT_EQ(tensor.shape(), std::vector<std::size_t>({2, 3}));
+
+    for (std::size_t i = 0; i < tensor.size(); ++i) {
+        EXPECT_FLOAT_EQ(tensor.data()[i], 0.0f);
+    }
+}
+
 } // namespace neuralc
