@@ -2,40 +2,53 @@
 
 #include <stdexcept>
 
-namespace neuralc{
-    Tensor::Tensor(const std::vector<std::size_t>& shape): shape_(shape){
-        std::size_t size = 1;
+namespace neuralc {
+Tensor::Tensor(const std::vector<std::size_t>& shape) : shape_(shape), strides_(shape.size()) {
 
-        for (const std::size_t dimension : shape_){
-            if (dimension == 0){
-                throw std::invalid_argument("Tensor dimensions must be greater than zero");
-            }
+    std::size_t size = 1;
 
-            size *= dimension;
+    for (std::size_t i = shape_.size(); i-- > 0;) {
+        if (shape_[i] == 0) {
+            throw std::invalid_argument("Tensor dimensions must be greater than zero");
         }
-        storage_ = std::make_shared<Storage>(size);
-    };
 
-[[nodiscard]] const std::vector<std::size_t>& Tensor::shape() const{
-    return shape_;
+        strides_[i] = size;
+        size *= shape_[i];
+    }
+
+    storage_ = std::make_shared<Storage>(size);
 }
 
-[[nodiscard]] std::size_t Tensor::size() const{
-    return storage_->size();
-}
+[[nodiscard]] const std::vector<std::size_t>& Tensor::shape() const { return shape_; }
 
-[[nodiscard]] float* Tensor::data(){
-    return storage_->data();
-}
+[[nodiscard]] std::size_t Tensor::size() const { return storage_->size(); }
 
-[[nodiscard]] const float* Tensor::data() const{
-    return storage_->data();
-}
+[[nodiscard]] float* Tensor::data() { return storage_->data(); }
 
-[[nodiscard]] Tensor Tensor::clone() const{
+[[nodiscard]] const float* Tensor::data() const { return storage_->data(); }
+
+[[nodiscard]] Tensor Tensor::clone() const {
     Tensor newTensor(shape_);
-    newTensor.storage_ = std::make_shared<Storage>(storage_->clone());   
+    newTensor.storage_ = std::make_shared<Storage>(storage_->clone());
     return newTensor;
 }
 
-} //namespace neuralc
+[[nodiscard]] float* Tensor::at(const std::vector<std::size_t>& index) {
+    if (index.size() != shape_.size()) {
+        throw std::out_of_range("Tensor index dimensions do not match tensor shape");
+    }
+
+    std::size_t flat_index = 0;
+
+    for (std::size_t i = 0; i < index.size(); ++i) {
+        if (index[i] >= shape_[i]) {
+            throw std::out_of_range("Tensor index out of bounds");
+        }
+
+        flat_index += index[i] * strides_[i];
+    }
+
+    return data() + flat_index;
+}
+
+} // namespace neuralc
