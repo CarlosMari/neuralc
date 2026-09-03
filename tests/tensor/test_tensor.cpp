@@ -29,12 +29,26 @@ TEST(TensorTest, DataCloneTest) {
 
 TEST(TensorTest, IndexTest) {
     Tensor a({2, 3});
-    a.data()[0] = 20.0f;
 
-    EXPECT_FLOAT_EQ(*a.at({0, 0}), 20.0f);
+    *a.at({0, 0}) = 20.0f;
+    *a.at({1, 1}) = 40.0f;
+
+    EXPECT_FLOAT_EQ(a.data()[0], 20.0f);
+    EXPECT_FLOAT_EQ(a.data()[4], 40.0f);
+
     EXPECT_THROW(static_cast<void>(a.at({2, 0})), std::out_of_range);
     EXPECT_THROW(static_cast<void>(a.at({0, 3})), std::out_of_range);
     EXPECT_THROW(static_cast<void>(a.at({0})), std::out_of_range);
+}
+
+TEST(TensorTest, ConstIndexAccess) {
+    Tensor tensor({2, 3});
+
+    *tensor.at({1, 2}) = 42.0f;
+
+    const Tensor& const_tensor = tensor;
+
+    EXPECT_FLOAT_EQ(*const_tensor.at({1, 2}), 42.0f);
 }
 
 } // namespace neuralc

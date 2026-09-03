@@ -33,22 +33,33 @@ Tensor::Tensor(const std::vector<std::size_t>& shape) : shape_(shape), strides_(
     return newTensor;
 }
 
-[[nodiscard]] float* Tensor::at(const std::vector<std::size_t>& index) {
+[[nodiscard]] std::size_t Tensor::flat_index(const std::vector<std::size_t>& index) const {
+
     if (index.size() != shape_.size()) {
         throw std::out_of_range("Tensor index dimensions do not match tensor shape");
     }
 
-    std::size_t flat_index = 0;
+    std::size_t offset = 0;
 
     for (std::size_t i = 0; i < index.size(); ++i) {
         if (index[i] >= shape_[i]) {
             throw std::out_of_range("Tensor index out of bounds");
         }
 
-        flat_index += index[i] * strides_[i];
+        offset += index[i] * strides_[i];
     }
 
-    return data() + flat_index;
+    return offset;
+}
+
+[[nodiscard]] float* Tensor::at(const std::vector<std::size_t>& index) {
+
+    return data() + flat_index(index);
+}
+
+[[nodiscard]] const float* Tensor::at(const std::vector<std::size_t>& index) const {
+
+    return data() + flat_index(index);
 }
 
 } // namespace neuralc
