@@ -43,6 +43,12 @@ class Tensor {
     [[nodiscard]] Tensor operator*(float scalar) const;
     [[nodiscard]] Tensor operator/(float scalar) const;
 
+    //inplace operators
+    Tensor& operator+=(const Tensor& other);
+    Tensor& operator-=(const Tensor& other);
+    Tensor& operator*=(const Tensor& other);
+    Tensor& operator/=(const Tensor& other);
+
   private:
     std::shared_ptr<Storage> storage_;
     std::vector<std::size_t> shape_;

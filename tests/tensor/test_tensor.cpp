@@ -226,5 +226,86 @@ TEST(TensorTest, ScalarDivisionByZeroThrows) {
     EXPECT_THROW(static_cast<void>(tensor / 0.0f), std::invalid_argument);
 }
 
+TEST(TensorTest, InPlaceAddition) {
+    Tensor a({2, 3});
+    Tensor b({2, 3});
+
+    a.fill(2.0f);
+    b.fill(3.0f);
+
+    Tensor& result = (a += b);
+
+    EXPECT_EQ(&result, &a);
+
+    for (std::size_t i = 0; i < a.size(); ++i) {
+        EXPECT_FLOAT_EQ(a.data()[i], 5.0f);
+    }
+}
+
+TEST(TensorTest, InPlaceSubtraction) {
+    Tensor a({2, 3});
+    Tensor b({2, 3});
+
+    a.fill(5.0f);
+    b.fill(2.0f);
+
+    Tensor& result = (a -= b);
+
+    EXPECT_EQ(&result, &a);
+
+    for (std::size_t i = 0; i < a.size(); ++i) {
+        EXPECT_FLOAT_EQ(a.data()[i], 3.0f);
+    }
+}
+
+TEST(TensorTest, InPlaceMultiplication) {
+    Tensor a({2, 3});
+    Tensor b({2, 3});
+
+    a.fill(2.0f);
+    b.fill(3.0f);
+
+    Tensor& result = (a *= b);
+
+    EXPECT_EQ(&result, &a);
+
+    for (std::size_t i = 0; i < a.size(); ++i) {
+        EXPECT_FLOAT_EQ(a.data()[i], 6.0f);
+    }
+}
+
+TEST(TensorTest, InPlaceDivision) {
+    Tensor a({2, 3});
+    Tensor b({2, 3});
+
+    a.fill(6.0f);
+    b.fill(2.0f);
+
+    Tensor& result = (a /= b);
+
+    EXPECT_EQ(&result, &a);
+
+    for (std::size_t i = 0; i < a.size(); ++i) {
+        EXPECT_FLOAT_EQ(a.data()[i], 3.0f);
+    }
+}
+
+TEST(TensorTest, InPlaceDivisionByZeroThrows) {
+    Tensor a({2, 3});
+    Tensor b({2, 3});
+
+    a.fill(6.0f);
+    b.fill(2.0f);
+
+    b.data()[3] = 0.0f;
+
+    EXPECT_THROW(static_cast<void>(a /= b), std::invalid_argument);
+
+    // The important part: a was not partially modified.
+    for (std::size_t i = 0; i < a.size(); ++i) {
+        EXPECT_FLOAT_EQ(a.data()[i], 6.0f);
+    }
+}
+
 } // namespace neuralc
 

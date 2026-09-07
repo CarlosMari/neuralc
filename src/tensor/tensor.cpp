@@ -186,7 +186,38 @@ void Tensor::check_for_zeros(const Tensor& other) const {
 }
 
 
+//inplace operators
+Tensor& Tensor::operator+=(const Tensor& other){
+    check_same_shape(other);
+    for (std::size_t i = 0; i < size(); ++i) {
+        data()[i] += other.data()[i];
+    }
+    return *this;
+}
 
+Tensor& Tensor::operator-=(const Tensor& other){
+    check_same_shape(other);
+    for (std::size_t i = 0; i < size(); ++i) {
+        data()[i] -= other.data()[i];
+    }
+    return *this;
+}
 
+Tensor& Tensor::operator*=(const Tensor& other){
+    check_same_shape(other);
+    for (std::size_t i = 0; i < size(); ++i) {
+        data()[i] *= other.data()[i];
+    }
+    return *this;
+}
+
+Tensor& Tensor::operator/=(const Tensor& other){
+    check_same_shape(other);
+    check_for_zeros(other);
+    for (std::size_t i = 0; i < size(); ++i) {
+        data()[i] /= other.data()[i];
+    }
+    return *this;
+}
 
 } // namespace neuralc
