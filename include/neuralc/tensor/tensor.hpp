@@ -65,5 +65,10 @@ class Tensor {
     //helpers
     void check_same_shape(const Tensor& other) const;
     void check_for_zeros(const Tensor& other) const;
+    void check_same_size(const std::vector<std::size_t>& new_shape) const;
+    bool same_shape(const Tensor& other) const;
+
+
+
 };
 } // namespace neuralc

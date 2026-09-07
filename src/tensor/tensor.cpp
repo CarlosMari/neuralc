@@ -88,6 +88,26 @@ void Tensor::check_same_shape(const Tensor& other) const {
     }
 }
 
+void Tensor::check_same_size(
+    const std::vector<std::size_t>& new_shape) const {
+
+    std::size_t new_size = 1;
+
+    for (std::size_t dimension : new_shape) {
+        if (dimension == 0) {
+            throw std::invalid_argument(
+                "Tensor dimensions must be greater than zero");
+        }
+
+        new_size *= dimension;
+    }
+
+    if (new_size != size()) {
+        throw std::invalid_argument(
+            "New shape must contain the same number of elements");
+    }
+}
+
 void Tensor::check_for_zeros(const Tensor& other) const {
    for (std::size_t i = 0; i < other.size(); ++i) {
         if (other.data()[i] == 0.0f){
@@ -234,9 +254,18 @@ Tensor& Tensor::operator/=(const Tensor& other){
     return sum() / static_cast<float>(size());
 }
 
+void Tensor::reshape(const std::vector<std::size_t>& new_shape) {
+    check_same_size(new_shape);
 
-void Tensor::reshape(const std::vector<std::size_t>& new_shape){
+    shape_ = new_shape;
+    strides_.resize(new_shape.size());
 
+    std::size_t stride = 1;
+
+    for (std::size_t i = new_shape.size(); i-- > 0;) {
+        strides_[i] = stride;
+        stride *= new_shape[i];
+    }
 }
 
 } // namespace neuralc

@@ -371,5 +371,64 @@ TEST(TensorTest, MeanSingleElement) {
     EXPECT_FLOAT_EQ(tensor.mean(), 42.0f);
 }
 
+
+TEST(TensorTest, Reshape) {
+    Tensor tensor({2, 3});
+
+    for (std::size_t i = 0; i < tensor.size(); ++i) {
+        tensor.data()[i] = static_cast<float>(i + 1);
+    }
+
+    tensor.reshape({3, 2});
+
+    EXPECT_EQ(tensor.shape(), std::vector<std::size_t>({3, 2}));
+
+    for (std::size_t i = 0; i < tensor.size(); ++i) {
+        EXPECT_FLOAT_EQ(tensor.data()[i], static_cast<float>(i + 1));
+    }
+
+    EXPECT_FLOAT_EQ(*tensor.at({0, 0}), 1.0f);
+    EXPECT_FLOAT_EQ(*tensor.at({0, 1}), 2.0f);
+    EXPECT_FLOAT_EQ(*tensor.at({1, 0}), 3.0f);
+    EXPECT_FLOAT_EQ(*tensor.at({1, 1}), 4.0f);
+    EXPECT_FLOAT_EQ(*tensor.at({2, 0}), 5.0f);
+    EXPECT_FLOAT_EQ(*tensor.at({2, 1}), 6.0f);
+}
+
+TEST(TensorTest, ReshapeChangesDimensionality) {
+    Tensor tensor({2, 3});
+
+    tensor.reshape({6});
+
+    EXPECT_EQ(tensor.shape(), std::vector<std::size_t>({6}));
+    EXPECT_EQ(tensor.size(), 6);
+}
+
+TEST(TensorTest, ReshapeRejectsDifferentSize) {
+    Tensor tensor({2, 3});
+
+    EXPECT_THROW(tensor.reshape({2, 2}), std::invalid_argument);
+}
+
+TEST(TensorTest, ReshapeRejectsZeroDimension) {
+    Tensor tensor({2, 3});
+
+    EXPECT_THROW(tensor.reshape({0, 6}), std::invalid_argument);
+}
+
+TEST(TensorTest, FailedReshapeDoesNotModifyTensor) {
+    Tensor tensor({2, 3});
+
+    tensor.fill(5.0f);
+
+    EXPECT_THROW(tensor.reshape({4, 2}), std::invalid_argument);
+
+    EXPECT_EQ(tensor.shape(), std::vector<std::size_t>({2, 3}));
+
+    for (std::size_t i = 0; i < tensor.size(); ++i) {
+        EXPECT_FLOAT_EQ(tensor.data()[i], 5.0f);
+    }
+}
+
 } // namespace neuralc
 
