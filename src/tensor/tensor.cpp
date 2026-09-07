@@ -234,4 +234,9 @@ Tensor& Tensor::operator/=(const Tensor& other){
     return sum() / static_cast<float>(size());
 }
 
+
+void Tensor::reshape(const std::vector<std::size_t>& new_shape){
+
+}
+
 } // namespace neuralc

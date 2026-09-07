@@ -11,22 +11,21 @@ class Tensor {
   public:
     explicit Tensor(const std::vector<std::size_t>& shape);
 
-    [[nodiscard]] static Tensor ones(const std::vector<std::size_t>& shape);
-    [[nodiscard]] static Tensor zeros(const std::vector<std::size_t>& shape);
-    
-    [[nodiscard]] bool same_shape(const Tensor& other) const;
-
     [[nodiscard]] const std::vector<std::size_t>& shape() const;
     [[nodiscard]] std::size_t size() const;
 
+    // data access
     [[nodiscard]] float* data();
     [[nodiscard]] const float* data() const;
 
-    [[nodiscard]] Tensor clone() const;
-
+    //indexing
     [[nodiscard]] float* at(const std::vector<std::size_t>& index);
     [[nodiscard]] const float* at(const std::vector<std::size_t>& index) const;
 
+    // creation
+    [[nodiscard]] static Tensor ones(const std::vector<std::size_t>& shape);
+    [[nodiscard]] static Tensor zeros(const std::vector<std::size_t>& shape);
+    [[nodiscard]] Tensor clone() const;
     void fill(float value);
     void ones();
     void zeros();
@@ -52,6 +51,9 @@ class Tensor {
     //utils
     [[nodiscard]] float sum() const;
     [[nodiscard]] float mean() const;
+
+    //shape
+    void reshape(const std::vector<std::size_t>& new_shape);
 
   private:
     std::shared_ptr<Storage> storage_;
