@@ -33,6 +33,11 @@ Tensor::Tensor(const std::vector<std::size_t>& shape) : shape_(shape), strides_(
     return newTensor;
 }
 
+
+[[nodiscard]] bool Tensor::same_shape(const Tensor& other) const {
+    return other.shape_ == shape_;
+}
+
 [[nodiscard]] std::size_t Tensor::flat_index(const std::vector<std::size_t>& index) const {
 
     if (index.size() != shape_.size()) {
@@ -86,6 +91,49 @@ void Tensor::zeros(){
         Tensor newTensor(shape);
         newTensor.fill(0.0f);
         return newTensor;
+}
+
+// Operators
+[[nodiscard]] Tensor Tensor::operator+(const Tensor& other) const {
+    if (other.shape_ != shape_) {
+        throw std::invalid_argument("Tensors must have the same shape");
+    }
+
+    Tensor newTensor(shape_);
+
+    for (std::size_t i = 0; i < size(); ++i) {
+        newTensor.data()[i] = data()[i] + other.data()[i];
+    }
+
+    return newTensor;
+}
+
+[[nodiscard]] Tensor Tensor::operator-(const Tensor& other) const {
+    if (other.shape_ != shape_) {
+        throw std::invalid_argument("Tensors must have the same shape");
+    }
+
+    Tensor newTensor(shape_);
+
+    for (std::size_t i = 0; i < size(); ++i) {
+        newTensor.data()[i] = data()[i] - other.data()[i];
+    }
+
+    return newTensor;
+}
+
+[[nodiscard]] Tensor Tensor::operator*(const Tensor& other) const {
+    if (other.shape_ != shape_) {
+        throw std::invalid_argument("Tensors must have the same shape");
+    }
+
+    Tensor newTensor(shape_);
+
+    for (std::size_t i = 0; i < size(); ++i) {
+        newTensor.data()[i] = data()[i] * other.data()[i];
+    }
+
+    return newTensor;
 }
 
 } // namespace neuralc

@@ -13,6 +13,8 @@ class Tensor {
 
     [[nodiscard]] static Tensor ones(const std::vector<std::size_t>& shape);
     [[nodiscard]] static Tensor zeros(const std::vector<std::size_t>& shape);
+    
+    [[nodiscard]] bool same_shape(const Tensor& other) const;
 
     [[nodiscard]] const std::vector<std::size_t>& shape() const;
     [[nodiscard]] std::size_t size() const;
@@ -28,6 +30,14 @@ class Tensor {
     void fill(float value);
     void ones();
     void zeros();
+
+    // Operators
+    [[nodiscard]] Tensor operator+(const Tensor& other) const;
+    [[nodiscard]] Tensor operator-(const Tensor& other) const;
+    [[nodiscard]] Tensor operator*(const Tensor& other) const;
+
+
+
 
   private:
     std::shared_ptr<Storage> storage_;

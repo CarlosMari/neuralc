@@ -93,4 +93,53 @@ TEST(TensorTest, ZerosFactory) {
     }
 }
 
+TEST(TensorTest, Addition) {
+    Tensor a({2, 3});
+    Tensor b({2, 3});
+
+    a.fill(2.0f);
+    b.fill(3.0f);
+
+    Tensor c = a + b;
+
+    EXPECT_EQ(c.shape(), std::vector<std::size_t>({2, 3}));
+    EXPECT_EQ(c.size(), 6);
+
+    for (std::size_t i = 0; i < c.size(); ++i) {
+        EXPECT_FLOAT_EQ(c.data()[i], 5.0f);
+    }
+}
+
+TEST(TensorTest, Subtraction) {
+    Tensor a({2, 3});
+    Tensor b({2, 3});
+
+    a.fill(5.0f);
+    b.fill(2.0f);
+
+    Tensor c = a - b;
+
+    EXPECT_EQ(c.shape(), std::vector<std::size_t>({2, 3}));
+
+    for (std::size_t i = 0; i < c.size(); ++i) {
+        EXPECT_FLOAT_EQ(c.data()[i], 3.0f);
+    }
+}
+
+TEST(TensorTest, Multiplication) {
+    Tensor a({2, 3});
+    Tensor b({2, 3});
+
+    a.fill(2.0f);
+    b.fill(3.0f);
+
+    Tensor c = a * b;
+
+    EXPECT_EQ(c.shape(), std::vector<std::size_t>({2, 3}));
+
+    for (std::size_t i = 0; i < c.size(); ++i) {
+        EXPECT_FLOAT_EQ(c.data()[i], 6.0f);
+    }
+}
+
 } // namespace neuralc
