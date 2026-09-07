@@ -54,6 +54,7 @@ class Tensor {
 
     //shape
     void reshape(const std::vector<std::size_t>& new_shape);
+    [[nodiscard]] Tensor transpose() const;
 
   private:
     std::shared_ptr<Storage> storage_;

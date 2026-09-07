@@ -430,5 +430,24 @@ TEST(TensorTest, FailedReshapeDoesNotModifyTensor) {
     }
 }
 
+TEST(TensorTest, Transpose) {
+    Tensor tensor({2, 3});
+
+    for (std::size_t i = 0; i < tensor.size(); ++i) {
+        tensor.data()[i] = static_cast<float>(i + 1);
+    }
+
+    Tensor result = tensor.transpose();
+
+    EXPECT_EQ(result.shape(), std::vector<std::size_t>({3, 2}));
+
+    EXPECT_FLOAT_EQ(*result.at({0, 0}), 1.0f);
+    EXPECT_FLOAT_EQ(*result.at({0, 1}), 4.0f);
+    EXPECT_FLOAT_EQ(*result.at({1, 0}), 2.0f);
+    EXPECT_FLOAT_EQ(*result.at({1, 1}), 5.0f);
+    EXPECT_FLOAT_EQ(*result.at({2, 0}), 3.0f);
+    EXPECT_FLOAT_EQ(*result.at({2, 1}), 6.0f);
+}
+
 } // namespace neuralc
 

@@ -268,4 +268,30 @@ void Tensor::reshape(const std::vector<std::size_t>& new_shape) {
     }
 }
 
+[[nodiscard]] Tensor Tensor::transpose() const {
+    if (shape_.size() != 2) {
+        throw std::invalid_argument("Transpose currently only supports 2D tensors");
+    }
+
+    std::vector<std::size_t> new_shape{
+        shape_[1],
+        shape_[0]
+    };
+
+    Tensor newTensor(new_shape);
+
+    for (std::size_t i = 0; i < shape_[0]; ++i) {
+        for (std::size_t j = 0; j < shape_[1]; ++j) {
+            std::size_t old_index = i * strides_[0] + j * strides_[1];
+
+            std::size_t new_index = j * newTensor.strides_[0]
+                                  + i * newTensor.strides_[1];
+
+            newTensor.data()[new_index] = data()[old_index];
+        }
+    }
+
+    return newTensor;
+}
+
 } // namespace neuralc
