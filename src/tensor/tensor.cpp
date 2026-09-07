@@ -159,4 +159,34 @@ void Tensor::check_for_zeros(const Tensor& other) const {
     return newTensor;
 }
 
+// Scalar Operators
+
+[[nodiscard]] Tensor Tensor::operator*(float scalar) const{
+    Tensor newTensor(shape_);
+    newTensor.fill(scalar);
+    return *this * newTensor;
+}
+
+[[nodiscard]] Tensor Tensor::operator+(float scalar) const{
+    Tensor newTensor(shape_);
+    newTensor.fill(scalar);
+    return *this + newTensor;
+}
+
+[[nodiscard]] Tensor Tensor::operator-(float scalar) const{
+    Tensor newTensor(shape_);
+    newTensor.fill(scalar);
+    return *this - newTensor;
+}
+
+[[nodiscard]] Tensor Tensor::operator/(float scalar) const{
+    Tensor newTensor(shape_);
+    newTensor.fill(scalar);
+    return *this / newTensor;
+}
+
+
+
+
+
 } // namespace neuralc

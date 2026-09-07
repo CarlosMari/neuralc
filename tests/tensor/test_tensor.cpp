@@ -171,5 +171,60 @@ TEST(TensorTest, DivisionByZeroThrows) {
 }
 
 
+TEST(TensorTest, ScalarAddition) {
+    Tensor tensor({2, 3});
+    tensor.fill(2.0f);
+
+    Tensor result = tensor + 3.0f;
+
+    for (std::size_t i = 0; i < result.size(); ++i) {
+        EXPECT_FLOAT_EQ(result.data()[i], 5.0f);
+        EXPECT_FLOAT_EQ(tensor.data()[i], 2.0f);
+    }
+}
+
+TEST(TensorTest, ScalarSubtraction) {
+    Tensor tensor({2, 3});
+    tensor.fill(5.0f);
+
+    Tensor result = tensor - 2.0f;
+
+    for (std::size_t i = 0; i < result.size(); ++i) {
+        EXPECT_FLOAT_EQ(result.data()[i], 3.0f);
+        EXPECT_FLOAT_EQ(tensor.data()[i], 5.0f);
+    }
+}
+
+TEST(TensorTest, ScalarMultiplication) {
+    Tensor tensor({2, 3});
+    tensor.fill(3.0f);
+
+    Tensor result = tensor * 4.0f;
+
+    for (std::size_t i = 0; i < result.size(); ++i) {
+        EXPECT_FLOAT_EQ(result.data()[i], 12.0f);
+        EXPECT_FLOAT_EQ(tensor.data()[i], 3.0f);
+    }
+}
+
+TEST(TensorTest, ScalarDivision) {
+    Tensor tensor({2, 3});
+    tensor.fill(12.0f);
+
+    Tensor result = tensor / 4.0f;
+
+    for (std::size_t i = 0; i < result.size(); ++i) {
+        EXPECT_FLOAT_EQ(result.data()[i], 3.0f);
+        EXPECT_FLOAT_EQ(tensor.data()[i], 12.0f);
+    }
+}
+
+TEST(TensorTest, ScalarDivisionByZeroThrows) {
+    Tensor tensor({2, 3});
+    tensor.fill(6.0f);
+
+    EXPECT_THROW(static_cast<void>(tensor / 0.0f), std::invalid_argument);
+}
+
 } // namespace neuralc
 

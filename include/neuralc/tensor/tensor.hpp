@@ -37,7 +37,11 @@ class Tensor {
     [[nodiscard]] Tensor operator*(const Tensor& other) const;
     [[nodiscard]] Tensor operator/(const Tensor& other) const;
 
-
+    // Scalar operators
+    [[nodiscard]] Tensor operator+(float scalar) const;
+    [[nodiscard]] Tensor operator-(float scalar) const;
+    [[nodiscard]] Tensor operator*(float scalar) const;
+    [[nodiscard]] Tensor operator/(float scalar) const;
 
   private:
     std::shared_ptr<Storage> storage_;
