@@ -307,5 +307,69 @@ TEST(TensorTest, InPlaceDivisionByZeroThrows) {
     }
 }
 
+TEST(TensorTest, Sum) {
+    Tensor tensor({2, 3});
+
+    tensor.data()[0] = 1.0f;
+    tensor.data()[1] = 2.0f;
+    tensor.data()[2] = 3.0f;
+    tensor.data()[3] = 4.0f;
+    tensor.data()[4] = 5.0f;
+    tensor.data()[5] = 6.0f;
+
+    EXPECT_FLOAT_EQ(tensor.sum(), 21.0f);
+}
+
+TEST(TensorTest, SumWithNegativeValues) {
+    Tensor tensor({2, 2});
+
+    tensor.data()[0] = -1.0f;
+    tensor.data()[1] = 2.0f;
+    tensor.data()[2] = -3.0f;
+    tensor.data()[3] = 4.0f;
+
+    EXPECT_FLOAT_EQ(tensor.sum(), 2.0f);
+}
+
+TEST(TensorTest, SumSingleElement) {
+    Tensor tensor({1});
+
+    tensor.data()[0] = 42.0f;
+
+    EXPECT_FLOAT_EQ(tensor.sum(), 42.0f);
+}
+
+TEST(TensorTest, Mean) {
+    Tensor tensor({2, 3});
+
+    tensor.data()[0] = 1.0f;
+    tensor.data()[1] = 2.0f;
+    tensor.data()[2] = 3.0f;
+    tensor.data()[3] = 4.0f;
+    tensor.data()[4] = 5.0f;
+    tensor.data()[5] = 6.0f;
+
+    EXPECT_FLOAT_EQ(tensor.mean(), 3.5f);
+}
+
+TEST(TensorTest, MeanWithNegativeValues) {
+    Tensor tensor({2, 2});
+
+    tensor.data()[0] = -1.0f;
+    tensor.data()[1] = 2.0f;
+    tensor.data()[2] = -3.0f;
+    tensor.data()[3] = 4.0f;
+
+    EXPECT_FLOAT_EQ(tensor.mean(), 0.5f);
+}
+
+TEST(TensorTest, MeanSingleElement) {
+    Tensor tensor({1});
+
+    tensor.data()[0] = 42.0f;
+
+    EXPECT_FLOAT_EQ(tensor.mean(), 42.0f);
+}
+
 } // namespace neuralc
 

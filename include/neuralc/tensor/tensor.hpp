@@ -49,6 +49,10 @@ class Tensor {
     Tensor& operator*=(const Tensor& other);
     Tensor& operator/=(const Tensor& other);
 
+    //utils
+    [[nodiscard]] float sum() const;
+    [[nodiscard]] float mean() const;
+
   private:
     std::shared_ptr<Storage> storage_;
     std::vector<std::size_t> shape_;

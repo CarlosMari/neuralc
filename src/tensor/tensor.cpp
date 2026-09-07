@@ -220,4 +220,18 @@ Tensor& Tensor::operator/=(const Tensor& other){
     return *this;
 }
 
+
+[[nodiscard]] float Tensor::sum() const{
+    float total = 0.0f;
+    for (std::size_t i = 0; i < size(); ++i) {
+        total += data()[i];
+    }
+
+    return total;
+}
+
+[[nodiscard]] float Tensor::mean() const{
+    return sum() / static_cast<float>(size());
+}
+
 } // namespace neuralc
