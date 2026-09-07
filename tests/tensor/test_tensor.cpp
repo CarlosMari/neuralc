@@ -142,4 +142,34 @@ TEST(TensorTest, Multiplication) {
     }
 }
 
+TEST(TensorTest, Division) {
+    Tensor a({2, 3});
+    Tensor b({2, 3});
+
+    a.fill(6.0f);
+    b.fill(2.0f);
+
+    Tensor c = a / b;
+
+    EXPECT_EQ(c.shape(), std::vector<std::size_t>({2, 3}));
+
+    for (std::size_t i = 0; i < c.size(); ++i) {
+        EXPECT_FLOAT_EQ(c.data()[i], 3.0f);
+    }
+}
+
+TEST(TensorTest, DivisionByZeroThrows) {
+    Tensor a({2, 3});
+    Tensor b({2, 3});
+
+    a.fill(6.0f);
+    b.fill(2.0f);
+
+    b.data()[3] = 0.0f;
+
+    EXPECT_THROW(static_cast<void>(a / b), std::invalid_argument);
+}
+
+
 } // namespace neuralc
+

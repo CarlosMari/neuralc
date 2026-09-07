@@ -35,7 +35,7 @@ class Tensor {
     [[nodiscard]] Tensor operator+(const Tensor& other) const;
     [[nodiscard]] Tensor operator-(const Tensor& other) const;
     [[nodiscard]] Tensor operator*(const Tensor& other) const;
-
+    [[nodiscard]] Tensor operator/(const Tensor& other) const;
 
 
 
@@ -45,5 +45,9 @@ class Tensor {
     std::vector<std::size_t> strides_;
 
     [[nodiscard]] std::size_t flat_index(const std::vector<std::size_t>& index) const;
+
+    //helpers
+    void check_same_shape(const Tensor& other) const;
+    void check_for_zeros(const Tensor& other) const;
 };
 } // namespace neuralc

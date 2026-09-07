@@ -81,6 +81,22 @@ void Tensor::zeros(){
     fill(0.0f);
 }
 
+// helpers
+void Tensor::check_same_shape(const Tensor& other) const {
+    if (other.shape_ != shape_) {
+        throw std::invalid_argument("Tensors must have the same shape");
+    }
+}
+
+void Tensor::check_for_zeros(const Tensor& other) const {
+   for (std::size_t i = 0; i < other.size(); ++i) {
+        if (other.data()[i] == 0.0f){
+            throw std::invalid_argument("Cannot divide by zero");
+        }
+    } 
+}
+
+//factories
 [[nodiscard]] Tensor Tensor::ones(const std::vector<std::size_t>& shape){
        Tensor newTensor(shape);
        newTensor.fill(1.0f);
@@ -95,10 +111,8 @@ void Tensor::zeros(){
 
 // Operators
 [[nodiscard]] Tensor Tensor::operator+(const Tensor& other) const {
-    if (other.shape_ != shape_) {
-        throw std::invalid_argument("Tensors must have the same shape");
-    }
-
+    
+    check_same_shape(other);    
     Tensor newTensor(shape_);
 
     for (std::size_t i = 0; i < size(); ++i) {
@@ -109,10 +123,8 @@ void Tensor::zeros(){
 }
 
 [[nodiscard]] Tensor Tensor::operator-(const Tensor& other) const {
-    if (other.shape_ != shape_) {
-        throw std::invalid_argument("Tensors must have the same shape");
-    }
 
+    check_same_shape(other);
     Tensor newTensor(shape_);
 
     for (std::size_t i = 0; i < size(); ++i) {
@@ -123,14 +135,25 @@ void Tensor::zeros(){
 }
 
 [[nodiscard]] Tensor Tensor::operator*(const Tensor& other) const {
-    if (other.shape_ != shape_) {
-        throw std::invalid_argument("Tensors must have the same shape");
-    }
-
+    
+    check_same_shape(other);
     Tensor newTensor(shape_);
 
     for (std::size_t i = 0; i < size(); ++i) {
         newTensor.data()[i] = data()[i] * other.data()[i];
+    }
+
+    return newTensor;
+}
+
+[[nodiscard]] Tensor Tensor::operator/(const Tensor& other) const {
+    
+    check_same_shape(other);
+    check_for_zeros(other);
+    Tensor newTensor(shape_);
+
+    for (std::size_t i = 0; i < size(); ++i) {
+        newTensor.data()[i] = data()[i] / other.data()[i];
     }
 
     return newTensor;
